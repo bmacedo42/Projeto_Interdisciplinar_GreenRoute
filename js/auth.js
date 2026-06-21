@@ -222,7 +222,7 @@ class Auth {
     /**
      * Mostra o perfil do utilizador na interface
     */
-   static showUserProfile(user) {
+   static async showUserProfile(user) {
 
         const userName =
             user.user_metadata?.name || user.email;
@@ -232,8 +232,8 @@ class Auth {
         this.loginBtn.style.display = 'none';
         this.userBtn.style.display = 'flex';
 
-        const role =
-            localStorage.getItem('user_role');
+        const profile =
+            await supabase.getProfile(user.id);
 
         const adminLink =
             document.getElementById('adminLink');
@@ -241,7 +241,7 @@ class Auth {
         if (adminLink) {
 
             adminLink.style.display =
-                role === 'admin'
+                profile.role === 'admin'
                     ? 'block'
                     : 'none';
 
