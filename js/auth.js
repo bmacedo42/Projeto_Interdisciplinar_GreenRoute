@@ -58,15 +58,14 @@ class Auth {
 
 
         const role = localStorage.getItem('user_role');
+        const adminLink = document.getElementById('adminLink');
 
-        if(role === 'admin') {
-
-            document.getElementById(
-            'adminLink'
-            ).style.display = 'block';
-
+            if (adminLink) {
+                adminLink.style.display = role === 'admin'
+                    ? 'block'
+                    : 'none';
+            }
         }
-    }
 
     /**
      * Mostra o modal de login
