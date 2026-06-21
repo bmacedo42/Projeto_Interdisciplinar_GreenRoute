@@ -133,7 +133,7 @@ class Auth {
             'user_role',
             profile.role || 'user'
         );
-            this.showUserProfile(user);
+            await this.showUserProfile(user);
             this.closeLoginModal();
             this.showNotification(`Bem-vindo, ${user.email}!`, 'success');
         } catch (error) {
@@ -234,16 +234,23 @@ class Auth {
         const adminLink =
             document.getElementById('adminLink');
 
-        if (adminLink) {
+            if (adminLink) {
 
-            const role =
-                localStorage.getItem('user_role');
+            try {
+
+                const profile =
+                await supabase.getProfile(user.id);
 
             adminLink.style.display =
-                role === 'admin'
+                profile && profile.role === 'admin'
                     ? 'block'
                     : 'none';
 
+            } catch (error) {
+
+                adminLink.style.display = 'none';
+
+            }
         }
 
     }
