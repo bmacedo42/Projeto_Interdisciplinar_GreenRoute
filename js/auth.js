@@ -196,21 +196,57 @@ class Auth {
 
     /**
      * Faz logout do utilizador
-     */
+    */
     static async logout() {
+
         await supabase.signOut();
+
+        localStorage.removeItem('user_role');
+
+        const adminLink =
+            document.getElementById('adminLink');
+
+        if (adminLink) {
+            adminLink.style.display = 'none';
+        }
+
         this.hideUserProfile();
-        this.showNotification('Logout realizado com sucesso', 'success');
+
+        this.showNotification(
+            'Logout realizado com sucesso',
+            'success'
+        );
+
     }
 
     /**
      * Mostra o perfil do utilizador na interface
-     */
-    static showUserProfile(user) {
-        const userName = user.user_metadata?.name || user.email;
+    */
+   static showUserProfile(user) {
+
+        const userName =
+            user.user_metadata?.name || user.email;
+
         this.userName.textContent = userName;
+
         this.loginBtn.style.display = 'none';
         this.userBtn.style.display = 'flex';
+
+        const role =
+            localStorage.getItem('user_role');
+
+        const adminLink =
+            document.getElementById('adminLink');
+
+        if (adminLink) {
+
+            adminLink.style.display =
+                role === 'admin'
+                    ? 'block'
+                    : 'none';
+
+        }
+
     }
 
     /**
@@ -243,38 +279,6 @@ class Auth {
     }
 
 
-
-    static async showAdminPanel() {
-
-        const stats =
-            await supabase.getAdminStats();
-
-        document.getElementById(
-            'adminStats'
-        ).innerHTML = `
-
-            <div class="admin-card">
-                 Utilizadores:
-                ${stats.users.length}
-            </div>
-
-            <div class="admin-card">
-                 Favoritos:
-                ${stats.favorites.length}
-            </div>
-
-            <div class="admin-card">
-                 Pesquisas:
-                ${stats.history.length}
-            </div>
-
-        `;
-
-        document.getElementById(
-            'adminModal'
-        ).style.display = 'block';
-
-    }
 
     /**
      * Fecha o modal de perfil
