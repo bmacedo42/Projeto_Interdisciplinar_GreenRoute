@@ -232,16 +232,16 @@ class Auth {
         this.loginBtn.style.display = 'none';
         this.userBtn.style.display = 'flex';
 
-        const profile =
-            await supabase.getProfile(user.id);
-
         const adminLink =
             document.getElementById('adminLink');
 
         if (adminLink) {
 
+            const role =
+                localStorage.getItem('user_role');
+
             adminLink.style.display =
-                profile.role === 'admin'
+                role === 'admin'
                     ? 'block'
                     : 'none';
 
