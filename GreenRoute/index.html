@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GreenRoute - Mobilidade sustentável com rotas ecológicas">
+    <meta name="theme-color" content="#10b981">
+    
+    
+    <link rel="icon" type="image/x-icon" href="Icons/icons/Logo2.png">
+    <link rel="apple-touch-icon" href="Icons/icons/Logo2.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <title>GreenRoute - Mobilidade Sustentável</title>
+</head>
+<body>
+    <!-- Barra de Navegação -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <img src="Icons/icons/Logo.png" class="logo-image">
+            </div>
+            <div class="navbar-menu">
+                <button id="loginBtn" class="btn-login" onclick="Auth.showLoginModal()">Login</button>
+                <button id="userBtn" class="btn-user" style="display: none;">
+                    <span id="userName">Utilizador</span>
+                    <div class="dropdown-menu">
+                        <a href="#" onclick="Auth.showProfileModal()">Perfil</a>
+                        <a href="#" onclick="Auth.showFavorites()">Favoritos</a>
+                        <a href="#" onclick="Auth.showHistory()">Histórico</a>
+                        <hr>
+                        <a href="#" id="adminLink" style="display:none;" onclick="Auth.showAdminPanel()">
+                            Administrador
+                        </a>
+                        <a href="#" onclick="Auth.logout()">Logout</a>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <!-- Barra Lateral - Pesquisa -->
+        <aside class="sidebar">
+            <div class="search-container">
+                <h2>Encontre uma rota</h2>
+                
+                <!-- Pesquisa de Origem -->
+                <div class="search-input-group">
+                    <label for="origin">Origem</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="origin" 
+                            placeholder="Localização atual"
+                            class="input-origin"
+                        >
+                        <button class="btn-locate" onclick="Map.getCurrentLocation()" title="Usar minha localização">
+                            
+                            <img src="Icons/icons/Localizacao.png">
+
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pesquisa de Destino -->
+                <div class="search-input-group">
+                    <label for="destination">Destino</label>
+                    <input 
+                        type="text" 
+                        id="destination" 
+                        placeholder="Para onde deseja ir?"
+                        class="input-destination"
+                    >
+                    <div id="suggestionsDropdown" class="suggestions-dropdown" style="display: none;"></div>
+                </div>
+
+                <!-- Botão de Pesquisa -->
+                <button class="btn-search" onclick="Map.searchRoute()">
+                    Pesquisar Rota
+                </button>
+
+                <button
+                    id="favorite-btn"
+                    class="favorite-btn"
+                    onclick="Map.addToFavorites()"
+                >
+                    <img src="Icons/icons/Favoritos.png" alt="Favorito">
+                    <span>Guardar Favorito</span>
+                </button>
+
+                <!-- Opciones de Transporte -->
+                <div class="transport-selector">
+                    <h3>Modo de Transporte</h3>
+                    <div class="transport-options">
+                        <label class="transport-option">
+                            <input type="radio" name="transport" value="car" checked onchange="Map.updateTransport('car')">
+                            <span class="transport-label">
+                                <img src="Icons/icons/carro.png" class="transport-icon">
+                                Carro
+                            </span>
+                        </label>
+                        <label class="transport-option">
+                            <input type="radio" name="transport" value="bicycle" onchange="Map.updateTransport('bicycle')">
+                            <span class="transport-label">
+                                <img src="Icons/icons/bicicleta.png" class="transport-icon">
+                                Bicicleta
+                            </span>
+                        </label>
+                        <label class="transport-option">
+                            <input type="radio" name="transport" value="foot" onchange="Map.updateTransport('foot')">
+                            <span class="transport-label">
+                                <img src="Icons/icons/A_pe.png" class="transport-icon">
+                                A Pé
+                            </span>
+                        </label>
+                        <label class="transport-option">
+                            <input type="radio" name="transport" value="bus" onchange="Map.updateTransport('bus')">
+                            <span class="transport-label">
+                                <img src="Icons/icons/Autocarro.png" class="transport-icon">
+                                Transporte Público
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="action-buttons">
+                    <button class="btn-secondary" onclick="Map.clearRoute()">Limpar</button>
+                    
+                </div>
+
+                <!-- Tabela de Comparação -->
+                <div class="comparison-table" id="comparisonTable" style="display: none;">
+                    <h3>Comparação de Rotas</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Transporte</th>
+                                <th>Tempo</th>
+                                <th>Distância</th>
+                                <th>CO₂</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody">
+                            <!-- Será preenchido dinamicamente -->
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        </aside>
+
+        <!-- Mapa -->
+        <main class="map-container">
+            <div id="map"></div>
+            <div class="map-info" id="mapInfo" style="display: none;">
+                <p id="routeInfo"></p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Login -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content auth-modal">
+            <span class="close" onclick="Auth.closeLoginModal()">&times;</span>
+            <div class="auth-container">
+                <!-- Formulário de Login -->
+                <div class="auth-form" id="loginForm">
+                    <h2>Login</h2>
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" placeholder="seu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Palavra-passe</label>
+                        <input type="password" id="loginPassword" placeholder="Sua palavra-passe">
+                    </div>
+                    <button class="btn-primary" onclick="Auth.login()">Entrar</button>
+                    <p class="form-switch">
+                        Não tem conta? 
+                        <a href="#" onclick="Auth.switchToRegister()">Registar</a>
+                    </p>
+                </div>
+
+                <!-- Formulário de Registo -->
+                <div class="auth-form" id="registerForm" style="display: none;">
+                    <h2>Registar</h2>
+                    <div class="form-group">
+                        <label for="registerName">Nome</label>
+                        <input type="text" id="registerName" placeholder="Seu nome">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" placeholder="seu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Palavra-passe</label>
+                        <input type="password" id="registerPassword" placeholder="Sua palavra-passe">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPasswordConfirm">Confirmar Palavra-passe</label>
+                        <input type="password" id="registerPasswordConfirm" placeholder="Confirme sua palavra-passe">
+                    </div>
+                    <button class="btn-primary" onclick="Auth.register()">Registar</button>
+                    <p class="form-switch">
+                        Já tem conta? 
+                        <button onclick="Auth.showAdminPanel()">
+                            Administrador
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Perfil -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content profile-modal">
+            <span class="close" onclick="Auth.closeProfileModal()">&times;</span>
+            <h2>Meu Perfil</h2>
+            <div class="profile-info">
+                <p><strong>Nome:</strong> <span id="profileName">-</span></p>
+                <p><strong>Email:</strong> <span id="profileEmail">-</span></p>
+                <p><strong>Membro desde:</strong> <span id="profileDate">-</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Favoritos -->
+    <div class="modal" id="favoritesModal">
+        <div class="modal-content favorites-modal">
+            <span class="close" onclick="Auth.closeFavoritesModal()">&times;</span>
+            <h2>Meus Favoritos</h2>
+            <div class="favorites-list" id="favoritesList">
+                <p>Nenhum favorito salvo</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Histórico -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content history-modal">
+            <span class="close" onclick="Auth.closeHistoryModal()">&times;</span>
+            <h2>Histórico de Pesquisas</h2>
+            <div class="history-list" id="historyList">
+                <p>Nenhuma pesquisa salva</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificações -->
+    <div class="notification" id="notification" style="display: none;"></div>
+
+        <!-- Styles & Scripts for Leaflet (OpenStreetMap) -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+        <!-- Scripts da aplicação -->
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/app.js"></script>
+    <!-- Script de validação (opcional, para debug) -->
+    <!-- <script src="js/validator.js"></script> -->
+
+    <script>
+        // Registar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js').then(registration => {
+                console.log('Service Worker registado com sucesso:', registration);
+            }).catch(error => {
+                console.log('Erro ao registar Service Worker:', error);
+            });
+        }
+    </script>
+
+
+
+    <div class="modal" id="adminModal">
+
+        <div class="modal-content admin-modal">
+
+            <span class="close" onclick="Auth.closeAdminPanel()">
+                &times;
+            </span>
+
+            <h2>Painel de Administração</h2>
+
+            <div id="adminStats">
+                <p>Carregando estatísticas...</p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    
+</body>
+</html>

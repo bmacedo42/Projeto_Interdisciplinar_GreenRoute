@@ -1,0 +1,69 @@
+{
+  "name": "GreenRoute - Mobilidade Sustentável",
+  "short_name": "GreenRoute",
+  "description": "Uma Progressive Web App para mobilidade sustentável com rotas ecológicas baseadas em OpenStreetMap",
+
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+
+  "display": "standalone",
+  "orientation": "portrait-primary",
+
+  "theme_color": "#10b981",
+  "background_color": "#ffffff",
+
+  "lang": "pt-PT",
+
+  "categories": [
+    "navigation",
+    "travel",
+    "utilities"
+  ],
+
+  "prefer_related_applications": false,
+
+  "icons": [
+    {
+      "src": "Icons/icons/Logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Icons/icons/Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Pesquisar Rota",
+      "short_name": "Rota",
+      "description": "Pesquise uma rota ecológica",
+      "url": "./?route=search",
+      "icons": [
+        {
+          "src": "icons/Logo.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Meus Favoritos",
+      "short_name": "Favoritos",
+      "description": "Ver rotas favoritas",
+      "url": "./?view=favorites",
+      "icons": [
+        {
+          "src": "icons/Favoritos.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
