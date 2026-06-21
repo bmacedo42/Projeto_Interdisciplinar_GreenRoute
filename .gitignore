@@ -1,0 +1,77 @@
+# GreenRoute - .gitignore
+
+# Credenciais e variáveis de ambiente
+
+.env
+.env.local
+.env.*.local
+
+# Dependências
+
+node_modules/
+
+# Logs
+
+*.log
+logs/
+
+# Ficheiros temporários
+
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Builds
+
+dist/
+build/
+out/
+
+# VS Code
+
+.vscode/
+*.code-workspace
+
+# IntelliJ / WebStorm
+
+.idea/
+
+# macOS
+
+.DS_Store
+._*
+
+# Windows
+
+Thumbs.db
+ehthumbs.db
+
+# Cache
+
+.cache/
+.parcel-cache/
+
+# Bases de dados locais
+
+*.db
+*.sqlite
+*.sqlite3
+
+# Chaves privadas
+
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Backups
+
+*.bak
+*.backup
+
+# Arquivos comprimidos
+
+*.zip
+*.rar
+*.7z
